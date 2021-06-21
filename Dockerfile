@@ -93,6 +93,11 @@ WORKDIR /usr/src/app
 
 ENV PATH /usr/src/app/bin:$PATH
 
+RUN mkdir -p /var/run/tailscale
+RUN mkdir -p /var/cache/tailscale
+RUN mkdir -p /var/lib/tailscale
+RUN chown appuser:appgroup /var/run/tailscale /var/cache/tailscale /var/lib/tailscale
+
 # Add a script to be executed every time the container starts.
 COPY bin/docker/entrypoints/* /usr/bin/
 RUN chmod +x /usr/bin/wait-for-web.sh
@@ -136,9 +141,6 @@ RUN RAILS_SERVE_STATIC_FILES=enabled \
 
 COPY --from=tailscale /usr/src/app/tailscaled /usr/src/app/tailscaled
 COPY --from=tailscale /usr/src/app/tailscale /usr/src/app/tailscale
-RUN mkdir -p /var/run/tailscale
-RUN mkdir -p /var/cache/tailscale
-RUN mkdir -p /var/lib/tailscale
 
 # Run on container startup.
 CMD ["/bin/docker/start.sh"]
