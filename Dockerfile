@@ -134,7 +134,6 @@ RUN RAILS_SERVE_STATIC_FILES=enabled \
 	bundle exec rake assets:precompile \
 	&& bundle exec bootsnap precompile --gemfile app/ lib/
 
-COPY --from=builder /usr/src/app/bin/docker/start.sh /usr/src/app/bin/docker/start.sh
 COPY --from=tailscale /usr/src/app/tailscaled /usr/src/app/tailscaled
 COPY --from=tailscale /usr/src/app/tailscale /usr/src/app/tailscale
 RUN mkdir -p /var/run/tailscale
