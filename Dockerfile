@@ -143,4 +143,4 @@ COPY --from=tailscale /usr/src/app/tailscaled /usr/src/app/tailscaled
 COPY --from=tailscale /usr/src/app/tailscale /usr/src/app/tailscale
 
 # Run on container startup.
-CMD ["/bin/docker/start.sh"]
+CMD ["/usr/src/app/bin/docker/start.sh"]
