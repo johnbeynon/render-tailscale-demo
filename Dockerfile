@@ -87,9 +87,8 @@ ENV PATH /usr/src/app/bin:$PATH
 
 # Add a script to be executed every time the container starts.
 COPY bin/docker/entrypoints/* /usr/bin/
-RUN chmod +x /usr/bin/wait-for-postgres.sh
 RUN chmod +x /usr/bin/wait-for-web.sh
-ENTRYPOINT ["/usr/bin/wait-for-postgres.sh"]
+ENTRYPOINT ["/usr/bin/wait-for-web.sh"]
 
 # Define the user running the container
 USER appuser
