@@ -48,6 +48,14 @@ RUN apk --no-cache add \
 # COPY Aptfile /usr/src/app/Aptfile
 # RUN apk add --update $(cat /usr/src/app/Aptfile | xargs)
 
+FROM alpine:latest as tailscale
+WORKDIR /usr/src/app
+COPY . ./
+ENV TSFILE=tailscale_1.8.3_amd64.tgz
+RUN wget https://pkgs.tailscale.com/stable/${TSFILE} && \
+	tar xzf ${TSFILE} --strip-components=1
+COPY . ./
+
 FROM builder AS development
 
 # Set common ENVs
@@ -94,7 +102,7 @@ ENTRYPOINT ["/usr/bin/wait-for-web.sh"]
 USER appuser
 
 EXPOSE 3000
-CMD ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+# CMD ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 FROM development AS production
 
@@ -125,3 +133,12 @@ RUN RAILS_SERVE_STATIC_FILES=enabled \
 	SECRET_KEY_BASE=secret-key-base \
 	bundle exec rake assets:precompile \
 	&& bundle exec bootsnap precompile --gemfile app/ lib/
+
+COPY --from=tailscale /app/tailscaled /app/tailscaled
+COPY --from=tailscale /app/tailscale /app/tailscale
+RUN mkdir -p /var/run/tailscale
+RUN mkdir -p /var/cache/tailscale
+RUN mkdir -p /var/lib/tailscale
+
+# Run on container startup.
+CMD ["/bin/docker/start.sh"]
