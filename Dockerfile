@@ -51,7 +51,7 @@ RUN apk --no-cache add \
 FROM alpine:latest as tailscale
 WORKDIR /usr/src/app
 COPY . ./
-ENV TSFILE=tailscale_1.8.3_amd64.tgz
+ENV TSFILE=tailscale_1.8.7_amd64.tgz
 RUN wget https://pkgs.tailscale.com/stable/${TSFILE} && \
 	tar xzf ${TSFILE} --strip-components=1
 COPY . ./
